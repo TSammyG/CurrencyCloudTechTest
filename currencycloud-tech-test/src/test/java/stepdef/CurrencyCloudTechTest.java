@@ -5,10 +5,14 @@ import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,59 +40,57 @@ public class CurrencyCloudTechTest {
 	//parameters.put("s.goodland@hotmail.co.uk", "1257b7f731c5bd4e8cda2de05279415da5ee90855d230db37624c3350fe10462");
 
 	URL url;
+	String login_value = "s.goodland@hotmail.co.uk";
+	String api_value = "ba9997230669a6d7a31a27a82bbbd31b8148ae4e7bd45928817079f34a86cbe4";
+	String charset = "UTF-8";
+	Map<String, String> login = new HashMap<>();
+    Map<String, String> api = new HashMap<>();
+    
+    
+    
+   
 	
-
+    
 	@Given("^the correct web address$")
 	public void the_correct_web_address() throws Throwable {
 	    // Write code here that turns the phrase above into concrete actions
 		url = new URL("https://devapi.currencycloud.com/v2/authenticate/api");
-		System.out.println("Test");
+		System.out.println("Step 1 passed");
 	}
 
 	@When("^I submit a Login ID and API key$")
 	public void i_submit_a_Login_ID_and_API_key() throws Throwable {
 	    // Write code here that turns the phrase above into concrete actions
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("POST");
+		//Starts the POST
+		con.setRequestMethod("POST");	
+		con.setRequestProperty("Content-Type", 
+	            "application/x-www-form-urlencoded");
 		
-	    Map<String, String> login = new HashMap<>();
-	    Map<String, String> api = new HashMap<>();
+	    con.setRequestProperty("Content-Language", "en-US");
 	    
-	    login.put("login_id", "s.goodland@hotmail.co.uk");
-	    api.put("api_key", "ba9997230669a6d7a31a27a82bbbd31b8148ae4e7bd45928817079f34a86cbe4");
-	    
+	    con.setUseCaches(false);
 	    con.setDoOutput(true);
-	    
-	    DataOutputStream out = new DataOutputStream(con.getOutputStream());
-	    out.writeBytes(ParameterStringBuilder.getParamsString(login));
-	    out.writeBytes(ParameterStringBuilder.getParamsString(api));
-	    out.flush();
-	    out.close();
-		System.out.println("Test2");
-		
-		int status = con.getResponseCode();
-		
-		BufferedReader in = new BufferedReader(
-				  new InputStreamReader(con.getInputStream()));
-				String inputLine;
-				StringBuffer content = new StringBuffer();
-				while ((inputLine = in.readLine()) != null) {
-				    content.append(inputLine);
-				}
-				in.close();
-				con.disconnect();
 
-	   
+	    // Sends request
+	    DataOutputStream output = new DataOutputStream (
+	            con.getOutputStream());
+	        
+	        output.close();
+	        
+		// Get response 
+	     
 	    
-	    Reader streamReader = null;
+	   // login.put("login_id", login_value);
+	   // api.put("api_key", api_value);
 	    
-	    if (status > 299) {
-	    	streamReader = new InputStreamReader(con.getErrorStream());
-	    }
-	    else {
-	    	streamReader = new InputStreamReader(con.getInputStream());
-	    }
+	    InputStream response = con.getInputStream();
+	    System.out.println(response);
+		System.out.println("Step 2 passed");
+
 	    
+	    
+		
 	}
 
 	@Then("^I will be returned an authentication token\\.$")
