@@ -1,4 +1,4 @@
-package java.stepdef;
+package stepdef;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -42,6 +42,7 @@ public class CurrencyCloudTechTest {
 	public void the_correct_web_address() throws Throwable {
 	    // Write code here that turns the phrase above into concrete actions
 		url = new URL("https://devapi.currencycloud.com/v2/authenticate/api");
+		System.out.println("Test");
 	}
 
 	@When("^I submit a Login ID and API key$")
@@ -54,32 +55,30 @@ public class CurrencyCloudTechTest {
 	    Map<String, String> api = new HashMap<>();
 	    
 	    login.put("login_id", "s.goodland@hotmail.co.uk");
-	    api.put("api_key", "1257b7f731c5bd4e8cda2de05279415da5ee90855d230db37624c3350fe10462");
+	    api.put("api_key", "ba9997230669a6d7a31a27a82bbbd31b8148ae4e7bd45928817079f34a86cbe4");
 	    
 	    con.setDoOutput(true);
 	    
 	    DataOutputStream out = new DataOutputStream(con.getOutputStream());
 	    out.writeBytes(ParameterStringBuilder.getParamsString(login));
+	    out.writeBytes(ParameterStringBuilder.getParamsString(api));
 	    out.flush();
 	    out.close();
-	    
-	    
-	    
-	}
+		System.out.println("Test2");
+		
+		int status = con.getResponseCode();
+		
+		BufferedReader in = new BufferedReader(
+				  new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer content = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+				    content.append(inputLine);
+				}
+				in.close();
+				con.disconnect();
 
-	@Then("^I will be returned an authentication token\\.$")
-	public void i_will_be_returned_an_authentication_token() throws Throwable {
-	    // Write code here that turns the phrase above into concrete actions
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-	    int status = con.getResponseCode();
-	    BufferedReader in = new BufferedReader(
-	    		new InputStreamReader(con.getInputStream()));
-	    String inputLine;
-	    StringBuffer content = new StringBuffer();
-	    while ((inputLine = in.readLine()) != null) {
-	    	content.append(inputLine);
-	    }
-	    in.close();
+	   
 	    
 	    Reader streamReader = null;
 	    
@@ -89,6 +88,15 @@ public class CurrencyCloudTechTest {
 	    else {
 	    	streamReader = new InputStreamReader(con.getInputStream());
 	    }
+	    
+	}
+
+	@Then("^I will be returned an authentication token\\.$")
+	public void i_will_be_returned_an_authentication_token() throws Throwable {
+		System.out.println("Test4");
+
+	    
+	    
 	    
 	}
 

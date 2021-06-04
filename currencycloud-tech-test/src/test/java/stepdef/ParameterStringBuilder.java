@@ -1,4 +1,4 @@
-package java.stepdef;
+package stepdef;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
