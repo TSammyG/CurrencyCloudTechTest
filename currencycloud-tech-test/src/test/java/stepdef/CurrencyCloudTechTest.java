@@ -1,12 +1,19 @@
 package stepdef;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -14,8 +21,7 @@ import cucumber.api.java.en.When;
 
 public class CurrencyCloudTechTest {
 
-	// parameters.put("s.goodland@hotmail.co.uk",
-	// "1257b7f731c5bd4e8cda2de05279415da5ee90855d230db37624c3350fe10462");
+	
 
 	URL url;
 	String loginValue = "s.goodland@hotmail.co.uk";
@@ -39,25 +45,35 @@ public class CurrencyCloudTechTest {
 
 		// Starts the POST
 		con.setRequestMethod("POST");
-		con.setRequestProperty("Content-Type", "form-data");
-
-		con.setRequestProperty("Content-Language", "en-US");
+		con.setRequestProperty("Content-Type", "multipart/form-data");
 
 		con.setUseCaches(false);
 		con.setDoOutput(true);
 
 		// Sends request
 		try (DataOutputStream output = new DataOutputStream(con.getOutputStream())) {
-			String parameters = String.format("%s&%s", loginDetails.get("login_id"), loginDetails.get("api_key"));
+			String parameters = String.format("login_id=%s&api_key=%s", loginDetails.get("login_id"), loginDetails.get("api_key"));
 			output.write(parameters.getBytes(StandardCharsets.UTF_8));
 		}
+		
 
 		// Get response
-		try (InputStream response = con.getInputStream()) {
-			System.out.println(response);
+		try (DataInputStream response = new DataInputStream(con.getInputStream())) {
+			System.out.println("Is it...");
+			//System.out.println(response);
 			System.out.println("Step 2 passed");
+		} catch(IOException e) {
+			BufferedReader response = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+			String line;
+			String result = "";
+			while((line = response.readLine()) != null) {
+				result += line;
+			}
+			DBObject object = (DBObject) JSON.parse(result);
+			System.out.println(object);
+			response.close();
 		}
-
+		System.out.println("...working?");
 	}
 
 	@Then("^I will be returned an authentication token\\.$")
