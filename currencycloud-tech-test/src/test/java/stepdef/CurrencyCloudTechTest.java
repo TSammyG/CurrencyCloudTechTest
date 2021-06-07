@@ -42,25 +42,32 @@ public class CurrencyCloudTechTest {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		loginDetails.put("login_id", loginValue);
 		loginDetails.put("api_key", apiValue);
-
+		
 		// Starts the POST
 		con.setRequestMethod("POST");
 		con.setRequestProperty("Content-Type", "multipart/form-data");
 
-		con.setUseCaches(false);
+		//con.setUseCaches(false);
 		con.setDoOutput(true);
 
+		
 		// Sends request
 		try (DataOutputStream output = new DataOutputStream(con.getOutputStream())) {
 			String parameters = String.format("login_id=%s&api_key=%s", loginDetails.get("login_id"), loginDetails.get("api_key"));
 			output.write(parameters.getBytes(StandardCharsets.UTF_8));
 		}
+		String x = loginDetails.get("login_id");
+		String y = loginDetails.get("api_key");
+		System.out.println(x);
+		System.out.println(y);
+		System.out.println(loginValue);
+		System.out.println(apiValue);
+		
 		
 
 		// Get response
 		try (DataInputStream response = new DataInputStream(con.getInputStream())) {
-			System.out.println("Is it...");
-			//System.out.println(response);
+			System.out.println(response);
 			System.out.println("Step 2 passed");
 		} catch(IOException e) {
 			BufferedReader response = new BufferedReader(new InputStreamReader(con.getErrorStream()));
@@ -73,7 +80,6 @@ public class CurrencyCloudTechTest {
 			System.out.println(object);
 			response.close();
 		}
-		System.out.println("...working?");
 	}
 
 	@Then("^I will be returned an authentication token\\.$")
