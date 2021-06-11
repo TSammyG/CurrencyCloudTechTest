@@ -25,7 +25,7 @@ public class CurrencyCloudTechTest {
 
 	URL url;
 	String loginValue = "s.goodland@hotmail.co.uk";
-	String apiValue = "ba9997230669a6d7a31a27a82bbbd31b8148ae4e7bd45928817079f34a86cbe4";
+	String apiValue = "a23050f0b6261d6227e70270990ba11f02e0726748c2b5b9a62f8767432930ab";
 	String charset = "UTF-8";
 	Map<String, String> loginDetails = new HashMap<>();
 
@@ -53,8 +53,12 @@ public class CurrencyCloudTechTest {
 		
 		// Sends request
 		try (DataOutputStream output = new DataOutputStream(con.getOutputStream())) {
-			String parameters = String.format("login_id=%s&api_key=%s", loginDetails.get("login_id"), loginDetails.get("api_key"));
+			String parameters = String.format("{'login_id': '%s', 'api_key': '%s'}", loginDetails.get("login_id"), loginDetails.get("api_key"));
 			output.write(parameters.getBytes(StandardCharsets.UTF_8));
+			System.out.println(parameters);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
 		}
 		String x = loginDetails.get("login_id");
 		String y = loginDetails.get("api_key");
@@ -62,11 +66,12 @@ public class CurrencyCloudTechTest {
 		System.out.println(y);
 		System.out.println(loginValue);
 		System.out.println(apiValue);
-		
+
 		
 
 		// Get response
-		try (DataInputStream response = new DataInputStream(con.getInputStream())) {
+		try {
+			BufferedReader response = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			System.out.println(response);
 			System.out.println("Step 2 passed");
 		} catch(IOException e) {
